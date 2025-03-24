@@ -1,4 +1,4 @@
-package com.tskmgmnt.rhine.entities;
+package com.tskmgmnt.rhine.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tskmgmnt.rhine.enums.UserRole;
@@ -11,15 +11,13 @@ import java.util.*;
 
 @Entity
 public class User implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(unique = true, nullable = false)
+    private String email;
 
     @Column(nullable = false)
     private String name;
-
-    @Column(unique = true, nullable = false)
-    private String email;
 
     @Column(nullable = false)
     private String pwd;
@@ -28,7 +26,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Task> tasks; // Tasks created by this user
 

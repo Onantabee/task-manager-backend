@@ -1,8 +1,9 @@
 package com.tskmgmnt.rhine.controller;
 
 import com.tskmgmnt.rhine.dto.TaskReq;
-import com.tskmgmnt.rhine.entities.Task;
-import com.tskmgmnt.rhine.services.TaskService;
+import com.tskmgmnt.rhine.dto.TaskResponse;
+import com.tskmgmnt.rhine.entity.Task;
+import com.tskmgmnt.rhine.service.TaskService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,16 +24,26 @@ public class  TaskController {
         return taskService.createTask(request).getTitle();
     }
     @GetMapping()
-    public List<Task> getTasks (){
+    public List<TaskResponse> getTasks (){
         return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById (@PathVariable Long id){
+    public TaskResponse getTaskById (@PathVariable Long id){
         return taskService.getTaskById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("update-task/{id}")
+    public Task updateTask(@PathVariable Long id, @RequestBody TaskReq taskReq) {
+        return taskService.updateTaskById(id, taskReq);
+    }
+
+    @PutMapping("/{id}/status")
+    public TaskResponse updateTaskStatus(@PathVariable Long id, @RequestBody TaskReq taskReq) {
+        return taskService.updateStatusById(id, taskReq);
+    }
+
+    @DeleteMapping("{id}")
     public Task deleteTask(@PathVariable Long id) {
         return taskService.deleteTaskById(id);
     }

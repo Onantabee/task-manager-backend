@@ -3,7 +3,6 @@ package com.tskmgmnt.rhine.dto;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class TaskReq {
     private final Long id;
@@ -58,35 +57,37 @@ public class TaskReq {
         return assigneeId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TaskReq taskReq = (TaskReq) o;
-        return Objects.equals(title, taskReq.title) &&
-                Objects.equals(description, taskReq.description) &&
-                Objects.equals(dueDate, taskReq.dueDate) &&
-                Objects.equals(priority, taskReq.priority) &&
-                taskStatus == taskReq.taskStatus &&
-                Objects.equals(createdById, taskReq.createdById) &&
-                Objects.equals(assigneeId, taskReq.assigneeId); // Change from Set<User> to Long
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(title, description, dueDate, priority, taskStatus, createdById, assigneeId); // Change from Set<User> to Long
-    }
 
-    @Override
-    public String toString() {
-        return "TaskReq{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", dueDate=" + dueDate +
-                ", priority='" + priority + '\'' +
-                ", taskStatus=" + taskStatus +
-                ", createdById='" + createdById + '\'' +
-                ", assigneeId=" + assigneeId + // Change from Set<User> to Long
-                '}';
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        TaskReq taskReq = (TaskReq) o;
+//        return Objects.equals(title, taskReq.title) &&
+//                Objects.equals(description, taskReq.description) &&
+//                Objects.equals(dueDate, taskReq.dueDate) &&
+//                Objects.equals(priority, taskReq.priority) &&
+//                taskStatus == taskReq.taskStatus &&
+//                Objects.equals(createdById, taskReq.createdById) &&
+//                Objects.equals(assigneeId, taskReq.assigneeId); // Change from Set<User> to Long
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(title, description, dueDate, priority, taskStatus, createdById, assigneeId); // Change from Set<User> to Long
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "TaskReq{" +
+//                "title='" + title + '\'' +
+//                ", description='" + description + '\'' +
+//                ", dueDate=" + dueDate +
+//                ", priority='" + priority + '\'' +
+//                ", taskStatus=" + taskStatus +
+//                ", createdById='" + createdById + '\'' +
+//                ", assigneeId=" + assigneeId + // Change from Set<User> to Long
+//                '}';
+//    }
 }

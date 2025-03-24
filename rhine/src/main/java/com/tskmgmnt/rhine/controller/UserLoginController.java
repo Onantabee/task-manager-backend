@@ -1,7 +1,7 @@
 package com.tskmgmnt.rhine.controller;
 
 import com.tskmgmnt.rhine.dto.UserLogReq;
-import com.tskmgmnt.rhine.services.UserLoginService;
+import com.tskmgmnt.rhine.service.UserLoginService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

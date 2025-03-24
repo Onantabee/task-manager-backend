@@ -1,9 +1,9 @@
-package com.tskmgmnt.rhine.services;
+package com.tskmgmnt.rhine.service;
 
 import com.tskmgmnt.rhine.dto.UserRegReq;
-import com.tskmgmnt.rhine.entities.User;
+import com.tskmgmnt.rhine.entity.User;
 import com.tskmgmnt.rhine.enums.UserRole;
-import com.tskmgmnt.rhine.repositories.UserRepository;
+import com.tskmgmnt.rhine.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
-package com.tskmgmnt.rhine.repositories;
+package com.tskmgmnt.rhine.repository;
 
-import com.tskmgmnt.rhine.entities.Task;
+import com.tskmgmnt.rhine.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,9 @@
 package com.tskmgmnt.rhine.controller;
 
-import com.tskmgmnt.rhine.entities.User;
-import com.tskmgmnt.rhine.services.UserService;
-import org.springframework.http.ResponseEntity;
+import com.tskmgmnt.rhine.dto.UserReq;
+import com.tskmgmnt.rhine.dto.UserRes;
+import com.tskmgmnt.rhine.entity.User;
+import com.tskmgmnt.rhine.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +24,12 @@ public class UserController {
     }
 
     @GetMapping("/{email}")
-    public User getUserByEmail(@PathVariable String email) {
+    public UserReq getUserByEmail(@PathVariable String email) {
         return userService.getUserByEmail(email);
     }
 
     @GetMapping("/non-admin")
-    public List<User> getNonAdminUsers() {
+    public List<UserRes> getNonAdminUsers() {
         return userService.getNonAdminUsers();
     }
 }

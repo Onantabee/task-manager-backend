@@ -1,11 +1,10 @@
 package com.tskmgmnt.rhine.config;
 
-import com.tskmgmnt.rhine.repositories.UserRepository;
+import com.tskmgmnt.rhine.repository.UserRepository;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,12 +25,12 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/users", "/users/**", "/task/**", "logout").permitAll()
+                        .requestMatchers("/", "/users", "/users/**", "/comment/**", "/task/**", "logout").permitAll()
                         .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
+//                .sessionManagement(session -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//                );
 
         return http.build();
     }

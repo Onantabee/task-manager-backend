@@ -1,9 +1,8 @@
 package com.tskmgmnt.rhine.controller;
 
 import com.tskmgmnt.rhine.dto.UserRegReq;
-import com.tskmgmnt.rhine.entities.User;
-import com.tskmgmnt.rhine.enums.UserRole;
-import com.tskmgmnt.rhine.services.UserRegistrationService;
+import com.tskmgmnt.rhine.entity.User;
+import com.tskmgmnt.rhine.service.UserRegistrationService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

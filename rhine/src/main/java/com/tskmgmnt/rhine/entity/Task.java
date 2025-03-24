@@ -1,4 +1,4 @@
-package com.tskmgmnt.rhine.entities;
+package com.tskmgmnt.rhine.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
