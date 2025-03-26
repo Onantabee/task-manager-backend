@@ -7,6 +7,7 @@ import com.tskmgmnt.rhine.entity.User;
 import com.tskmgmnt.rhine.repository.CommentRepository;
 import com.tskmgmnt.rhine.repository.TaskRepository;
 import com.tskmgmnt.rhine.repository.UserRepository;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
 
+    private final SimpMessagingTemplate messagingTemplate;
     private final CommentRepository commentRepository;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
-    public CommentService(CommentRepository commentRepository, TaskRepository taskRepository, UserRepository userRepository) {
+    public CommentService(SimpMessagingTemplate messagingTemplate, CommentRepository commentRepository, TaskRepository taskRepository, UserRepository userRepository) {
+        this.messagingTemplate = messagingTemplate;
         this.commentRepository = commentRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
@@ -51,7 +54,18 @@ public class CommentService {
         User recipient = (recipientEmail != null) ?
                 userRepository.findByEmail(recipientEmail).orElse(null) : null;
 
-        return commentRepository.save(new Comment(content, author, task, recipient));
+        Comment savedComment = commentRepository.save(new Comment(content, author, task, recipient));
+
+        CommentReq commentReq = new CommentReq(
+                savedComment.getId(),
+                savedComment.getContent(),
+                savedComment.getAuthor().getEmail(),
+                savedComment.getCreatedAt()
+        );
+
+        messagingTemplate.convertAndSend("/topic/comments", commentReq);
+
+        return savedComment;
     }
 
 //    public void deleteComment(Long commentId, Long userId, boolean isAdmin) {
