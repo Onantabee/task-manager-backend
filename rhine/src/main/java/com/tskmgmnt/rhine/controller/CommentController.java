@@ -1,6 +1,6 @@
 package com.tskmgmnt.rhine.controller;
 
-import com.tskmgmnt.rhine.dto.CommentReq;
+import com.tskmgmnt.rhine.dto.CommentDto;
 import com.tskmgmnt.rhine.entity.Comment;
 import com.tskmgmnt.rhine.service.CommentService;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class CommentController {
     }
 
     @GetMapping("/task/{taskId}")
-    public List<CommentReq> getCommentsByTask(@PathVariable Long taskId) {
+    public List<CommentDto> getCommentsByTask(@PathVariable Long taskId) {
         return commentService.getCommentsByTask(taskId);
     }
 

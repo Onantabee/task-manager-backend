@@ -1,6 +1,6 @@
 package com.tskmgmnt.rhine.service;
 
-import com.tskmgmnt.rhine.dto.CommentReq;
+import com.tskmgmnt.rhine.dto.CommentDto;
 import com.tskmgmnt.rhine.entity.Comment;
 import com.tskmgmnt.rhine.entity.Task;
 import com.tskmgmnt.rhine.entity.User;
@@ -28,10 +28,10 @@ public class CommentService {
         this.userRepository = userRepository;
     }
 
-    public List<CommentReq> getCommentsByTask(Long taskId) {
+    public List<CommentDto> getCommentsByTask(Long taskId) {
         List<Comment> comments = commentRepository.findByTaskId(taskId);
         return comments.stream()
-                .map(comment -> new CommentReq(
+                .map(comment -> new CommentDto(
                         comment.getId(),
                         comment.getContent(),
                         comment.getAuthor().getEmail(),
@@ -56,7 +56,7 @@ public class CommentService {
 
         Comment savedComment = commentRepository.save(new Comment(content, author, task, recipient));
 
-        CommentReq commentReq = new CommentReq(
+        CommentDto commentReq = new CommentDto(
                 savedComment.getId(),
                 savedComment.getContent(),
                 savedComment.getAuthor().getEmail(),

@@ -3,7 +3,7 @@ package com.tskmgmnt.rhine.dto;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 import java.util.Date;
 
-public class TaskResponse {
+public class TaskDto {
     private Long id;
     private String title;
     private String description;
@@ -12,6 +12,21 @@ public class TaskResponse {
     private TaskStatus taskStatus;
     private String createdById;
     private String assigneeId;
+
+    public TaskDto(Long id, String title, String description, Date dueDate, String priority, TaskStatus taskStatus, String createdById, String assigneeId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.taskStatus = taskStatus;
+        this.createdById = createdById;
+        this.assigneeId = assigneeId;
+    }
+
+    public TaskDto() {
+
+    }
 
     // Getters and Setters
     public Long getId() {

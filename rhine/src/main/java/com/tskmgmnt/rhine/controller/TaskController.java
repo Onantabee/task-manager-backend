@@ -1,9 +1,10 @@
 package com.tskmgmnt.rhine.controller;
 
-import com.tskmgmnt.rhine.dto.TaskReq;
-import com.tskmgmnt.rhine.dto.TaskResponse;
+import com.tskmgmnt.rhine.dto.TaskDto;
+import com.tskmgmnt.rhine.dto.TaskDto;
 import com.tskmgmnt.rhine.entity.Task;
 import com.tskmgmnt.rhine.service.TaskService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,32 +15,34 @@ import java.util.List;
 public class  TaskController {
 
     private final TaskService taskService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, SimpMessagingTemplate messagingTemplate) {
         this.taskService = taskService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping(path = "/create-task")
-    public String createTask (@RequestBody TaskReq request) {
-        return taskService.createTask(request).getTitle();
+    public TaskDto createTask (@RequestBody TaskDto request) {
+        return taskService.createTask(request);
     }
     @GetMapping()
-    public List<TaskResponse> getTasks (){
+    public List<TaskDto> getTasks (){
         return taskService.getAllTasks();
     }
 
     @GetMapping("/{id}")
-    public TaskResponse getTaskById (@PathVariable Long id){
+    public TaskDto getTaskById (@PathVariable Long id){
         return taskService.getTaskById(id);
     }
 
     @PutMapping("update-task/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody TaskReq taskReq) {
+    public TaskDto updateTask(@PathVariable Long id, @RequestBody TaskDto taskReq) {
         return taskService.updateTaskById(id, taskReq);
     }
 
     @PutMapping("/{id}/status")
-    public TaskResponse updateTaskStatus(@PathVariable Long id, @RequestBody TaskReq taskReq) {
+    public TaskDto updateTaskStatus(@PathVariable Long id, @RequestBody TaskDto taskReq) {
         return taskService.updateStatusById(id, taskReq);
     }
 

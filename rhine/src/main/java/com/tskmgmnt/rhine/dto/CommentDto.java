@@ -2,13 +2,13 @@ package com.tskmgmnt.rhine.dto;
 
 import java.time.LocalDateTime;
 
-public class CommentReq {
+public class CommentDto {
     private Long id;
     private String content;
     private String authorEmail;
     private LocalDateTime createdAt;
 
-    public CommentReq(Long id, String content, String authorEmail, LocalDateTime createdAt) {
+    public CommentDto(Long id, String content, String authorEmail, LocalDateTime createdAt) {
         this.id = id;
         this.content = content;
         this.authorEmail = authorEmail;

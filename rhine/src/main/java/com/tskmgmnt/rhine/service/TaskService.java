@@ -1,12 +1,14 @@
 package com.tskmgmnt.rhine.service;
 
-import com.tskmgmnt.rhine.dto.TaskReq;
-import com.tskmgmnt.rhine.dto.TaskResponse;
+import com.tskmgmnt.rhine.dto.NotificationDto;
+import com.tskmgmnt.rhine.dto.TaskDto;
+import com.tskmgmnt.rhine.dto.TaskDto;
 import com.tskmgmnt.rhine.entity.Task;
 import com.tskmgmnt.rhine.entity.User;
 import com.tskmgmnt.rhine.repository.TaskRepository;
 import com.tskmgmnt.rhine.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +19,16 @@ import java.util.stream.Collectors;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    public Task createTask(TaskReq taskReq) {
+    public TaskDto createTask(TaskDto taskReq) {
         Task task = new Task();
         task.setTitle(taskReq.getTitle());
         task.setDescription(taskReq.getDescription());
@@ -42,37 +46,42 @@ public class TaskService {
             task.setAssignee(assignee);
         }
 
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+
+        messagingTemplate.convertAndSend("/topic/task-created",
+                new NotificationDto("TASK_CREATED", mapToTaskResponse(savedTask)));
+
+        return mapToTaskResponse(savedTask);
     }
 
-    public List<TaskResponse> getAllTasks() {
+    public List<TaskDto> getAllTasks() {
         List<Task> tasks = taskRepository.findAll();
         return tasks.stream()
                 .map(this::mapToTaskResponse)
                 .collect(Collectors.toList());
     }
 
-    private TaskResponse mapToTaskResponse(Task task) {
-        TaskResponse response = new TaskResponse();
+    private TaskDto mapToTaskResponse(Task task) {
+        TaskDto response = new TaskDto();
         response.setId(task.getId());
         response.setTitle(task.getTitle());
         response.setDescription(task.getDescription());
         response.setDueDate(task.getDueDate());
         response.setPriority(task.getPriority());
         response.setTaskStatus(task.getTaskStatus());
-        response.setCreatedById(task.getCreatedBy().getEmail()); // Assuming email is the ID
+        response.setCreatedById(task.getCreatedBy().getEmail());
         if (task.getAssignee() != null) {
-            response.setAssigneeId(task.getAssignee().getEmail()); // Assuming email is the ID
+            response.setAssigneeId(task.getAssignee().getEmail());
         }
         return response;
     }
 
-    public TaskResponse getTaskById(Long id) {
+    public TaskDto getTaskById(Long id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not Found!"));
         return mapToTaskResponse(task);
     }
 
-    public Task updateTaskById(Long id, TaskReq taskReq) {
+    public TaskDto updateTaskById(Long id, TaskDto taskReq) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not Found!"));
 
@@ -93,16 +102,22 @@ public class TaskService {
         } else {
             existingTask.setAssignee(null);
         }
-
-        return taskRepository.save(existingTask);
+        Task updatedTask = taskRepository.save(existingTask);
+        TaskDto taskResponse = mapToTaskResponse(updatedTask);
+        messagingTemplate.convertAndSend("/topic/task-updated",
+                new NotificationDto("TASK_UPDATED", taskResponse));
+        return taskResponse;
     }
 
-    public TaskResponse updateStatusById(Long id, TaskReq taskReq) {
+    public TaskDto updateStatusById(Long id, TaskDto taskReq) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not Found!"));
 
         task.setTaskStatus(taskReq.getTaskStatus());
         Task updatedTask = taskRepository.save(task);
+
+        messagingTemplate.convertAndSend("/topic/task-status-updated",
+                new NotificationDto("TASK_STATUS_UPDATED", mapToTaskResponse(updatedTask)));
 
         return mapToTaskResponse(updatedTask);
     }
@@ -112,9 +127,11 @@ public class TaskService {
             Optional<Task> taskToDelete = taskRepository.findById(id);
             if (taskToDelete.isPresent()) {
                 Task task = taskToDelete.get();
+                TaskDto response = mapToTaskResponse(task);
                 taskRepository.delete(task);
-                taskRepository.flush();
                 System.out.println("Task deleted successfully: " + task.getId());
+                messagingTemplate.convertAndSend("/topic/task-deleted",
+                        new NotificationDto("TASK_DELETED", response.getId()));
                 return task;
             } else {
                 throw new RuntimeException("Task not found");
@@ -124,4 +141,5 @@ public class TaskService {
             throw e;
         }
     }
+
 }
