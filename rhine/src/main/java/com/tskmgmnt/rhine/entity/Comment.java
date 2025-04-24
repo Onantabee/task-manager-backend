@@ -27,12 +27,17 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "recipient_id")
-    private User recipient; // Nullable, since not all comments are directed
+    private User recipient;
+
+    @Column(nullable = false)
+    private boolean isReadByRecipient;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Comment() {}
+    public Comment() {
+        this.isReadByRecipient = false;
+    }
 
     public Comment(String content, User author, Task task, User recipient) {
         this.content = content;
@@ -81,6 +86,14 @@ public class Comment {
 
     public void setRecipient(User recipient) {
         this.recipient = recipient;
+    }
+
+    public boolean isReadByRecipient() {
+        return isReadByRecipient;
+    }
+
+    public void setReadByRecipient(boolean readByRecipient) {
+        isReadByRecipient = readByRecipient;
     }
 
     public LocalDateTime getCreatedAt() {

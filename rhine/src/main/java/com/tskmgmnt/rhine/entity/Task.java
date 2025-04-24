@@ -23,12 +23,10 @@ public class Task {
 
     private String priority;
 
+    private boolean isNew;
+
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
-
-    @ManyToOne
-    @JsonBackReference
-    private Project project;
 
     @ManyToOne
     @JoinColumn(name = "created_by_id")
@@ -45,6 +43,7 @@ public class Task {
     private List<Comment> comments;
 
     public Task() {
+        this.isNew = true;
     }
 
     public Task(Long id, String title, String description, Date dueDate, String priority, TaskStatus taskStatus) {
@@ -105,12 +104,12 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
-    public Project getProject() {
-        return project;
+    public boolean getIsNew() {
+        return isNew;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setIsNew(boolean aNew) {
+        isNew = aNew;
     }
 
     public User getCreatedBy() {

@@ -49,7 +49,7 @@ public class TaskService {
         Task savedTask = taskRepository.save(task);
 
         messagingTemplate.convertAndSend("/topic/task-created",
-                new NotificationDto("TASK_CREATED", mapToTaskResponse(savedTask)));
+                new NotificationDto<>("TASK_CREATED", mapToTaskResponse(savedTask)));
 
         return mapToTaskResponse(savedTask);
     }
@@ -70,6 +70,7 @@ public class TaskService {
         response.setPriority(task.getPriority());
         response.setTaskStatus(task.getTaskStatus());
         response.setCreatedById(task.getCreatedBy().getEmail());
+        response.setIsNew(task.getIsNew());
         if (task.getAssignee() != null) {
             response.setAssigneeId(task.getAssignee().getEmail());
         }
@@ -105,7 +106,7 @@ public class TaskService {
         Task updatedTask = taskRepository.save(existingTask);
         TaskDto taskResponse = mapToTaskResponse(updatedTask);
         messagingTemplate.convertAndSend("/topic/task-updated",
-                new NotificationDto("TASK_UPDATED", taskResponse));
+                new NotificationDto<>("TASK_UPDATED", taskResponse));
         return taskResponse;
     }
 
@@ -117,9 +118,29 @@ public class TaskService {
         Task updatedTask = taskRepository.save(task);
 
         messagingTemplate.convertAndSend("/topic/task-status-updated",
-                new NotificationDto("TASK_STATUS_UPDATED", mapToTaskResponse(updatedTask)));
+                new NotificationDto<>("TASK_STATUS_UPDATED", mapToTaskResponse(updatedTask)));
 
         return mapToTaskResponse(updatedTask);
+    }
+
+    public TaskDto updateIsNewState(Long id, TaskDto taskReq){
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not Found!"));
+        task.setIsNew(taskReq.getIsNew());
+        Task updatedTaskState = taskRepository.save(task);
+        messagingTemplate.convertAndSend("/topic/task-new-state",
+                new NotificationDto<>("TASK_NEW_STATE", mapToTaskResponse(updatedTaskState)));
+        return mapToTaskResponse(updatedTaskState);
+    }
+
+    public TaskDto getIsNewState(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found!"));
+
+        TaskDto response = new TaskDto();
+        response.setIsNew(task.getIsNew());
+
+        return response;
     }
 
     public Task deleteTaskById(Long id) {
@@ -131,7 +152,7 @@ public class TaskService {
                 taskRepository.delete(task);
                 System.out.println("Task deleted successfully: " + task.getId());
                 messagingTemplate.convertAndSend("/topic/task-deleted",
-                        new NotificationDto("TASK_DELETED", response.getId()));
+                        new NotificationDto<>("TASK_DELETED", response.getId()));
                 return task;
             } else {
                 throw new RuntimeException("Task not found");

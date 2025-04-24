@@ -10,6 +10,7 @@ public class TaskDto {
     private Date dueDate;
     private String priority;
     private TaskStatus taskStatus;
+    private boolean isNew;
     private String createdById;
     private String assigneeId;
 
@@ -22,6 +23,10 @@ public class TaskDto {
         this.taskStatus = taskStatus;
         this.createdById = createdById;
         this.assigneeId = assigneeId;
+    }
+
+    public TaskDto(boolean isNew) {
+        this.isNew = isNew;
     }
 
     public TaskDto() {
@@ -75,6 +80,14 @@ public class TaskDto {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public boolean getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(boolean isNew) {
+        this.isNew = isNew;
     }
 
     public String getCreatedById() {

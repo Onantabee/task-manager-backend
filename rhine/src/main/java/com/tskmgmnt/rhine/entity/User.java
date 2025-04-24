@@ -26,6 +26,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRole userRole;
 
+    private boolean isList;
+
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Task> tasks; // Tasks created by this user
@@ -35,6 +37,7 @@ public class User implements UserDetails {
     private List<Task> assignedTasks; // Tasks assigned to this user
 
     public User() {
+        this.isList = false;
     }
 
     public String getName() {
@@ -67,6 +70,14 @@ public class User implements UserDetails {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public boolean isList() {
+        return isList;
+    }
+
+    public void setList(boolean list) {
+        isList = list;
     }
 
     public List<Task> getTasks() {
