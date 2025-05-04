@@ -50,7 +50,6 @@ public class UserService {
 //        }
 
         existingUser.setName(user.getName());
-        existingUser.setUserRole(user.getUserRole());
         User savedUser = userRepository.save(existingUser);
         return mapToUserResponse(savedUser);
     }
